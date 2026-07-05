@@ -1,0 +1,38 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Secrets
+.env
+.env.*
+!*.example
+credentials.json
+client_secret*.json
+
+# Python Cache & Compiled Code
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+logs/
+*.log
+
+# Data & Output (local runs)
+data/raw/
+data/processed/
+data/reports/
+sample_output/
+reports/
+
+# IDE / Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
