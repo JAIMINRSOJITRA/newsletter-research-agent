@@ -258,7 +258,13 @@ elif page == "▶️ Run Pipeline":
                 # Step 6: Theme Detection
                 status_text.markdown("💡 **Phase 8: Extracting weekly top themes and statistics...**")
                 with st.spinner("Compiling insights..."):
-                    themes = agent.theme_agent.detect_themes(analyzed_articles)
+                    from src.storage import storage_manager
+                    themes = agent.theme_agent.detect_themes(
+                        analyzed_articles,
+                        total_articles=len(raw_articles),
+                        duplicates_removed=len(duplicates),
+                    )
+                    storage_manager.save_themes(themes)
                 st.success(f"✓ Archiving complete. Main themes: {', '.join(themes.get('themes', {}).get('top_themes', []))}")
                 progress_bar.progress(90)
                 
