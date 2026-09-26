@@ -1,4 +1,3 @@
-import os
 import sys
 from config.settings import GEMINI_API_KEY
 from src.agents.research_agent import ResearchAgent
