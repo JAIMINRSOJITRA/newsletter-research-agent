@@ -4,7 +4,6 @@ import plotly.express as px
 import os
 import json
 import time
-from datetime import datetime
 import google.generativeai as genai
 
 # Setup page config
@@ -138,7 +137,7 @@ if page == "🏠 Home / Dashboard":
     
     if unique_articles > 0:
         st.success(f"✓ AI analysis database refreshed: {unique_articles} unique research reports processed.")
-        st.info(f"✓ Report deliverables compiled under: data/reports/weekly_digest.pdf")
+        st.info("✓ Report deliverables compiled under: data/reports/weekly_digest.pdf")
     else:
         st.warning("⚠ No data generated yet. Click 'Run Pipeline' in the navigation bar to start collecting research.")
 
@@ -272,7 +271,7 @@ elif page == "▶️ Run Pipeline":
                 status_text.markdown("📄 **Phase 9: Writing Markdown templates and ReportLab PDF...**")
                 with st.spinner("Compiling newsletter..."):
                     digest_path = agent.generate_digest(analyzed_articles, themes)
-                st.success(f"✓ Deliverables created successfully!")
+                st.success("✓ Deliverables created successfully!")
                 progress_bar.progress(100)
                 status_text.markdown("🎉 **Pipeline completed! Head over to View Digest or Analytics.**")
 
