@@ -4,7 +4,7 @@ import plotly.express as px
 import os
 import json
 import time
-import google.generativeai as genai
+from google import genai
 
 # Setup page config
 st.set_page_config(
@@ -164,9 +164,8 @@ elif page == "🔧 Configuration":
         else:
             with st.spinner("Connecting to Google Gemini API..."):
                 try:
-                    genai.configure(api_key=gemini_key)
-                    model = genai.GenerativeModel("gemini-2.5-flash")
-                    response = model.generate_content("Ping")
+                    client = genai.Client(api_key=gemini_key)
+                    response = client.models.generate_content(model="gemini-2.5-flash", contents="Ping")
                     if response.text:
                         st.success("✓ API Key Connection Successful!")
                     else:
