@@ -11,7 +11,7 @@ import json
 import logging
 import re
 
-import google.generativeai as genai
+from google import genai
 
 from config.settings import GEMINI_API_KEY, GEMINI_MODEL, GEMINI_DELAY_SECONDS
 
@@ -51,11 +51,7 @@ class Analyzer:
     def __init__(self):
         self.delay = GEMINI_DELAY_SECONDS
         self._configured = bool(GEMINI_API_KEY)
-        if self._configured:
-            genai.configure(api_key=GEMINI_API_KEY)
-            self.model = genai.GenerativeModel(GEMINI_MODEL)
-        else:
-            self.model = None
+        self.client = genai.Client(api_key=GEMINI_API_KEY) if self._configured else None
 
     def analyze_article(self, article: dict) -> dict:
         result = dict(article)
@@ -71,7 +67,7 @@ class Analyzer:
         )
 
         try:
-            response = self.model.generate_content(prompt)
+            response = self.client.models.generate_content(model=GEMINI_MODEL, contents=prompt)
             parsed = json.loads(_strip_fences(response.text or ""))
 
             result["summary"] = parsed.get("summary", _DEFAULT_ANALYSIS["summary"])
