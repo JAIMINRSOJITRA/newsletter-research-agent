@@ -17,7 +17,7 @@ import re
 from collections import Counter
 from datetime import datetime
 
-import google.generativeai as genai
+from google import genai
 
 from config.settings import GEMINI_API_KEY, GEMINI_MODEL
 
@@ -35,9 +35,7 @@ Articles:
 class ThemeAgent:
     def __init__(self):
         self._configured = bool(GEMINI_API_KEY)
-        self.model = genai.GenerativeModel(GEMINI_MODEL) if self._configured else None
-        if self._configured:
-            genai.configure(api_key=GEMINI_API_KEY)
+        self.client = genai.Client(api_key=GEMINI_API_KEY) if self._configured else None
 
     def _detect_top_themes(self, articles):
         if not self._configured or not articles:
@@ -46,7 +44,9 @@ class ThemeAgent:
             f"- [{a.get('category', 'Other')}] {a.get('title', '')}" for a in articles[:40]
         )
         try:
-            response = self.model.generate_content(_THEME_PROMPT.format(article_list=article_list))
+            response = self.client.models.generate_content(
+                model=GEMINI_MODEL, contents=_THEME_PROMPT.format(article_list=article_list)
+            )
             text = re.sub(r"^```(?:json)?|```$", "", (response.text or "").strip(), flags=re.MULTILINE)
             return json.loads(text.strip()).get("top_themes", [])[:5]
         except Exception as e:
