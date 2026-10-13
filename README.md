@@ -17,6 +17,28 @@ Keeping up with AI news means reading dozens of sources. This agent collects art
 * Optional, non-blocking Google Sheets sync
 * Streamlit dashboard: configuration, run pipeline, view digest, analytics
 
+## 🔄 Workflow
+
+The weekly pipeline. A failing source or AI call is handled without stopping the run.
+
+```mermaid
+flowchart TD
+    S1["RSS feeds: OpenAI, Hugging Face, TechCrunch"] --> C["Collect raw articles"]
+    S2["Page scraping: Anthropic, Product Hunt"] --> C
+    C --> PRE["Preprocess<br/>validate fields, strip HTML, normalize dates"]
+    PRE --> DD["Deduplicate<br/>RapidFuzz title similarity"]
+    DD --> AN["Analyze each article with Gemini<br/>summary, category, importance, companies, products"]
+    AN --> FB{"Valid JSON returned?"}
+    FB -->|"No"| DEF["Use safe default values"]
+    FB -->|"Yes"| ST["Store the results"]
+    DEF --> ST
+    ST --> JS[("analyzed_articles.json")]
+    ST -.-> GS[("Optional Google Sheets sync")]
+    ST --> TH["Detect weekly themes and statistics"]
+    TH --> DG["Generate the digest"]
+    DG --> OUT(["weekly_digest.md and weekly_digest.pdf"])
+```
+
 ## 🛠️ Tech Stack
 
 * Language: Python
